@@ -10,7 +10,9 @@ const todos = [{
     text: "First text todo"
 }, {
     _id: new ObjectID(),
-    text: "Second text todo"
+    text: "Second text todo",
+    completed: "true",
+    completedAt: 234
 }];
 
 
@@ -100,7 +102,7 @@ describe('GET /todos/:id', () => {
 
 });
 
-describe('GET /delete/:id', () => {
+describe('GET /todos/:id', () => {
     it('should return delete a todo ', (done) => {
         var id = todos[0]._id.toHexString();
         request(app)
@@ -130,6 +132,46 @@ describe('GET /delete/:id', () => {
     it('should return 404 for non object ids', (done) => {
         request(app)
             .delete(`/todos/abc`)
+            .expect(404)
+            .end(done);
+    });
+
+});
+
+describe('PATCH /todos/:id', () => {
+    it('should update a todo ', (done) => {
+        var id = todos[0]._id.toHexString();
+        request(app)
+            .patch(`/todos/${id}`)
+            .send({ "text": "updated todo", "completed": true })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe('updated todo');
+                expect(typeof res.body.todo.completedAt).toBe('number');
+                expect(res.body.todo.completed).toBe(true);
+            })
+            .end(done);
+
+    });
+
+
+    it('should clear completed at when todo is not completed', (done) => {
+        var id = todos[1]._id.toHexString();
+        request(app)
+            .patch(`/todos/${id}`)
+            .send({ "text": "updated todo" })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe('updated todo');
+                expect(res.body.todo.completedAt).toBe(null);
+                expect(res.body.todo.completed).toBe(false);
+            })
+            .end(done);
+    });
+
+    it('should return 404 for non object ids', (done) => {
+        request(app)
+            .patch(`/todos/abc`)
             .expect(404)
             .end(done);
     });
