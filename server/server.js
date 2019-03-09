@@ -7,10 +7,7 @@ var { User } = require('./models/user');
 var { Todo } = require('./models/todo');
 
 var app = express();
-
-app.listen(3000, () => {
-    console.log('started on port 3000');
-});
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -67,17 +64,10 @@ app.get('/todos/:id', (req, res) => {
 //     console.log('Unable to save Todo');
 // });
 
-
-
-// var newUser = new User({
-//     email: "suck a backchod.com"
-// });
-
-
-// newUser.save().then((doc) => {
-//     console.log(JSON.stringify(doc, undefined, 2))
-// }, (e) => {
-//     console.log('Unable to save User', e);
-// });
+app.listen(port, () => {
+    console.log('Started up on port', port);
+});
 
 module.exports = { app };
+
+
