@@ -82,7 +82,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
             bcrypt.compare(password, user.password, (err, res) => {
                 if (res)
                     resolve(user)
-                reject();
+                else { reject(); }
             })
         })
     });
